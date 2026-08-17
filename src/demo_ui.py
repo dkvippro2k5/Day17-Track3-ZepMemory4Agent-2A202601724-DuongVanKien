@@ -107,8 +107,46 @@ def retrieve_for_case(
       * Keep user_id and thread_id from the loaded case.
       * Finish with memory.assemble_context(layers).
     """
-    _ = (memory, case, extra_messages, settings, ShortTermMemory)
-    raise NotImplementedError("BONUS TODO: run student retrieval for the loaded case")
+    dataset = load_dataset()
+    layer = case.get("expected_layer", "mixed")
+    query = case["query"]
+    user_id = case["user_id"]
+    thread_id = case.get("thread_id", "")
+
+    layers = {"short_term": "", "long_term": "", "episodic": "", "semantic": ""}
+
+    short_term = ShortTermMemory(strategy="sliding", max_recent_messages=6, pressure_tokens=450)
+    messages = case.get("fixture_messages")
+    if not messages:
+        user = next((u for u in dataset["users"] if u["user_id"] == user_id), None)
+        session = next(
+            (s for s in (user or {}).get("sessions", []) if s["thread_id"] == thread_id), None
+        )
+        messages = (session or {}).get("messages", [])
+    for msg in messages or []:
+        short_term.add(msg["role"], msg["content"])
+    for msg in extra_messages:
+        short_term.add(msg["role"], msg["content"])
+    layers["short_term"] = short_term.render()
+
+    if layer == "mixed":
+        wanted = case.get("retrieve_layers") or ["long_term", "semantic"]
+    elif layer == "short_term":
+        wanted = []
+    else:
+        wanted = [layer]
+
+    if "long_term" in wanted:
+        layers["long_term"] = memory.retrieve_long_term(
+            user_id=user_id, thread_id=thread_id, query=query
+        )
+    if "episodic" in wanted:
+        layers["episodic"] = memory.retrieve_episodic(user_id, query)
+    if "semantic" in wanted:
+        layers["semantic"] = memory.retrieve_semantic(settings.semantic_graph_id, query)
+
+    merged_context, budget = memory.assemble_context(layers)
+    return {"merged_context": merged_context, "layers": layers, "budget": budget}
 
 
 def main() -> None:
