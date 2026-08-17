@@ -26,7 +26,8 @@ class StudentMemory:
         # Bonus: append graph.search(scope="edges", limit>=20) facts with
         #        validity ranges (a low limit can miss deadline/open-loop facts).
         prime_eval_thread(self.client, user_id, thread_id, query)
-        raise NotImplementedError("LAB TODO: implement long-term retrieval with Zep Context Block")
+        user_context = self.client.thread.get_user_context(thread_id=thread_id)
+        return getattr(user_context, "context", "") or ""
 
     def retrieve_episodic(self, user_id: str, query: str) -> str:
         # LAB TODO 2/4
