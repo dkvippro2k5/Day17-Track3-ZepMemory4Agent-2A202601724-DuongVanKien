@@ -1,0 +1,20 @@
+Evidence: episodic layer (retrieve_episodic via user-graph episode search)
+Source: reports/benchmark.md (impl=student, live Zep Cloud run)
+
+E04 | episodic | PASS | 288.6 ms | 153 tokens
+Query: Lan truoc Minh fix async HTTP timeout bang cach nao?
+Must contain: ClientSession, concurrency=20, ASYNC-FIX-20
+EPISODE: Hom nay toi debug async HTTP. Toi da thu tang timeout len 60s nhung
+van fail.
+EPISODE: Cach hieu qua la reuse aiohttp ClientSession va dat concurrency=20.
+Reflection: loi chinh la connection churn, khong phai timeout threshold.
+Ma su co ASYNC-FIX-20.
+EPISODE: Da ghi nhan trajectory: increase timeout khong hieu qua; ClientSession
++ concurrency=20 giai quyet connection churn.
+
+E05 | episodic | PASS | 294.8 ms | 144 tokens
+Query: Reflection cua su co async la gi, tang timeout co phai root fix khong?
+Must contain: connection churn, timeout threshold
+EPISODE: Cach hieu qua la reuse aiohttp ClientSession va dat concurrency=20.
+Reflection: loi chinh la connection churn, khong phai timeout threshold.
+Ma su co ASYNC-FIX-20.

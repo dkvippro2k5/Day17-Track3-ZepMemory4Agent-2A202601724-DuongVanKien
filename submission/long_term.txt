@@ -1,0 +1,28 @@
+Evidence: long_term layer (retrieve_long_term via Zep Context Block)
+Source: reports/benchmark.md (impl=student, live Zep Cloud run)
+
+E02 | long_term | PASS | 3267.6 ms | 898 tokens
+Query: Voi demo ca nhan cua Minh, ngon ngu uu tien la gi?
+Must contain: Python
+<USER_SUMMARY> The user's personal project is named ORCHID-27, for which they
+prefer Python. For the company project BLUEBIRD-42, the backend must use
+TypeScript with NestJS, and Python is not to be used for this project. ...
+
+E03 | long_term | PASS | 1912.4 ms | 899 tokens
+Query: Minh con open loop hay deadline nao chua hoan thanh?
+Must contain: benchmark report, 16:00
+<USER_SUMMARY> ... The user previously completed a benchmark report that was
+an open loop LAB-REPORT-1600, due by Friday at 16:00. ...
+
+E08 | long_term | PASS | 2114.5 ms | 893 tokens
+Query: Backend cua BLUEBIRD-42 bat buoc dung stack gi?
+Must contain: BLUEBIRD-42, TypeScript, NestJS
+<USER_SUMMARY> ... For the company project BLUEBIRD-42, the backend must use
+TypeScript with NestJS, and Python is not to be used for this project. ...
+(recency + scope: Python preference for ORCHID-27 still present, not deleted)
+
+E09 | long_term | PASS | 1849.3 ms | 564 tokens (user isolation: lan-lab17)
+Query: Lan uu tien stack backend nao cho LOTUS-88?
+Must contain: LOTUS-88, Java, Spring Boot | Must NOT contain: ORCHID-27
+<USER_SUMMARY> The user's project is LOTUS-88, and they prioritize Java and
+Spring Boot for backend development, explicitly not using Python. </USER_SUMMARY>
